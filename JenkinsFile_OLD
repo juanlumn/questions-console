@@ -1,0 +1,13 @@
+pipeline {
+    agent {
+        label 'master'
+    }
+    stages {
+        stage('Deploy') {
+            steps {
+                sh "sudo npm install -g serve"
+                sh "sudo nohup serve -s build > /dev/null 2>&1 &"
+            }
+        }
+    }
+}

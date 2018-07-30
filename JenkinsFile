@@ -2,11 +2,27 @@ pipeline {
     agent {
         label 'master'
     }
+    triggers {
+        pollSCM('')
+    }
     stages {
+        stage('Setup') {
+            steps {
+                echo 'Giving execute permissions to gradlew'
+                sh "chmod 755 gradlew"
+            }
+        }
+        stage('Test And Build') {
+            steps {
+                echo ' Building jar'
+                sh "./gradlew clean build"
+            }
+        }
         stage('Deploy') {
             steps {
-                sh "sudo npm install -g serve"
-                sh "sudo nohup serve -s build > /dev/null 2>&1 &"
+                sh "sudo docker stop questions-console || true && sudo docker rm -f questions-console || true"
+                sh "sudo docker image build -t questions-console ."
+                sh "sudo docker run --name questions-console --restart always -p 80:80 -d questions-console"
             }
         }
     }
