@@ -6,16 +6,11 @@ pipeline {
         pollSCM('')
     }
     stages {
-        stage('Setup') {
+        stage('Build') {
             steps {
-                echo 'Giving execute permissions to gradlew'
-                sh "chmod 755 gradlew"
-            }
-        }
-        stage('Test And Build') {
-            steps {
-                echo ' Building jar'
-                sh "./gradlew clean build"
+                echo ' Building project'
+                sh "sudo npm install"
+                sh "sudo npm run build"
             }
         }
         stage('Deploy') {
